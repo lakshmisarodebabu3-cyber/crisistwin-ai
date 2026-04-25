@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrisisTwin AI — Real-Time Disaster Management</title>
+
+  <!-- Leaflet Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Leaflet Heat plugin -->
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
+  <!-- Leaflet MarkerCluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ── TOP NAV ─────────────────────────────────────────────────────────── -->
+<nav class="topnav">
+  <div class="topnav-brand">
+    <span class="brand-icon">⬡</span>
+    <span class="brand-name">CrisisTwin <em>AI</em></span>
+  </div>
+  <div class="topnav-status">
+    <span class="live-dot"></span>
+    <span id="live-label">LIVE MONITORING</span>
+    <span class="divider">|</span>
+    <span id="clock"></span>
+  </div>
+  <div class="topnav-actions">
+    <button class="btn btn-outline" onclick="seedDemoData()">⚡ Load Demo</button>
+    <button class="btn btn-danger" onclick="clearAllAlerts()">✕ Clear All</button>
+  </div>
+</nav>
+
+<!-- ── MAIN LAYOUT ─────────────────────────────────────────────────────── -->
+<div class="app-layout">
+
+  <!-- LEFT SIDEBAR ───────────────────────────────────────────────── -->
+  <aside class="sidebar">
+
+    <!-- SOS Panel -->
+    <section class="panel sos-panel">
+      <h2 class="panel-title">🚨 SEND SOS ALERT</h2>
+      <p class="panel-sub">One-tap emergency dispatch</p>
+
+      <div class="sos-location">
+        <div class="location-display" id="location-display">
+          <span class="loc-icon">📍</span>
+          <span id="loc-text">Click to capture location</span>
+        </div>
+        <button class="btn btn-loc" onclick="captureLocation()">Get My Location</button>
+      </div>
+
+      <div class="form-group">
+        <label>Disaster Type</label>
+        <div class="disaster-grid">
+          <button class="dtype-btn active" data-type="flood"    onclick="selectType(this)">🌊 Flood</button>
+          <button class="dtype-btn"        data-type="fire"     onclick="selectType(this)">🔥 Fire</button>
+          <button class="dtype-btn"        data-type="medical"  onclick="selectType(this)">🚑 Medical</button>
+          <button class="dtype-btn"        data-type="collapse" onclick="selectType(this)">🏚 Collapse</button>
+          <button class="dtype-btn"        data-type="chemical" onclick="selectType(this)">☣️ Chemical</button>
+          <button class="dtype-btn"        data-type="unknown"  onclick="selectType(this)">❓ Other</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Severity <span id="severity-val" class="sev-badge">5</span></label>
+        <input type="range" id="severity" min="1" max="10" value="5"
+               oninput="document.getElementById('severity-val').textContent=this.value" />
+        <div class="sev-labels"><span>Low</span><span>Critical</span></div>
+      </div>
+
+      <div class="form-group">
+        <label>Details (optional)</label>
+        <textarea id="description" placeholder="e.g. People trapped on 3rd floor…" rows="2"></textarea>
+      </div>
+
+      <button class="btn btn-sos" onclick="submitSOS()">
+        <span class="sos-pulse"></span>
+        DISPATCH SOS NOW
+      </button>
+    </section>
+
+    <!-- Stats Panel -->
+    <section class="panel stats-panel">
+      <h2 class="panel-title">📊 LIVE DASHBOARD</h2>
+      <div class="stat-grid">
+        <div class="stat-card total"><div class="stat-num" id="st-total">0</div><div class="stat-label">Total SOS</div></div>
+        <div class="stat-card active"><div class="stat-num" id="st-active">0</div><div class="stat-label">Active</div></div>
+        <div class="stat-card high"><div class="stat-num" id="st-high">0</div><div class="stat-label">🔴 High</div></div>
+        <div class="stat-card medium"><div class="stat-num" id="st-medium">0</div><div class="stat-label">🟠 Medium</div></div>
+        <div class="stat-card low"><div class="stat-num" id="st-low">0</div><div class="stat-label">🟢 Low</div></div>
+        <div class="stat-card resolved"><div class="stat-num" id="st-resolved">0</div><div class="stat-label">Resolved</div></div>
+      </div>
+
+      <!-- Mini chart -->
+      <div class="chart-wrap">
+        <canvas id="typeChart" height="120"></canvas>
+      </div>
+    </section>
+
+    <!-- Alert List -->
+    <section class="panel alert-list-panel">
+      <h2 class="panel-title">📋 ACTIVE ALERTS
+        <span class="filter-pills">
+          <button class="pill active" onclick="filterAlerts('all',this)">All</button>
+          <button class="pill" onclick="filterAlerts('HIGH',this)">High</button>
+          <button class="pill" onclick="filterAlerts('MEDIUM',this)">Med</button>
+          <button class="pill" onclick="filterAlerts('LOW',this)">Low</button>
+        </span>
+      </h2>
+      <div class="alert-list" id="alert-list">
+        <div class="empty-state">No active alerts. Load demo data or submit an SOS.</div>
+      </div>
+    </section>
+
+  </aside>
+
+  <!-- CENTER — MAP ────────────────────────────────────────────────── -->
+  <main class="map-area">
+    <div id="map"></div>
+
+    <!-- Map toolbar -->
+    <div class="map-toolbar">
+      <button class="map-btn active" id="btn-markers" onclick="setMapMode('markers',this)" title="Alert Markers">📍 Markers</button>
+      <button class="map-btn" id="btn-heat"    onclick="setMapMode('heatmap',this)"  title="Density Heatmap">🌡 Heatmap</button>
+      <button class="map-btn" id="btn-cluster" onclick="setMapMode('clusters',this)" title="Cluster View">🔵 Clusters</button>
+      <button class="map-btn" id="btn-sim"     onclick="toggleSimulation()"          title="Simulation">🌀 Simulate</button>
+    </div>
+
+    <!-- Simulation controls (hidden initially) -->
+    <div class="sim-controls" id="sim-controls" style="display:none">
+      <div class="sim-header">
+        <span>🌀 DIGITAL TWIN SIMULATION</span>
+        <button class="sim-close" onclick="stopSimulation()">✕</button>
+      </div>
+      <div class="sim-body">
+        <label>Epicenter: <span id="sim-coords">Click a HIGH alert first</span></label>
+        <label>Step: <span id="sim-step-label">0 / 20</span></label>
+        <input type="range" id="sim-step" min="0" max="20" value="0" oninput="onSimStep(this.value)" />
+        <div class="sim-status" id="sim-status">Select an alert to simulate spread</div>
+        <div class="sim-info">
+          <span>Radius: <strong id="sim-radius">–</strong></span>
+          <span>Affected: <strong id="sim-affected">–</strong></span>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="autoPlaySim()">▶ Auto Play</button>
+      </div>
+    </div>
+
+    <!-- Route panel -->
+    <div class="route-panel" id="route-panel" style="display:none">
+      <div class="route-header">
+        <span>🗺 RESCUE ROUTE</span>
+        <button onclick="clearRoute()">✕</button>
+      </div>
+      <div class="route-info">
+        <span>Distance: <strong id="route-dist">–</strong></span>
+        <span>ETA: <strong id="route-eta">–</strong></span>
+      </div>
+    </div>
+
+    <!-- Cluster info panel -->
+    <div class="cluster-panel" id="cluster-panel" style="display:none">
+      <h3>🔵 Critical Zones Detected</h3>
+      <div id="cluster-list"></div>
+    </div>
+
+  </main>
+
+</div>
+
+<!-- ── TOAST NOTIFICATIONS ──────────────────────────────────────────────── -->
+<div id="toast-container"></div>
+
+<!-- ── MODAL: Alert Detail ──────────────────────────────────────────────── -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="closeModal()" style="display:none">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="modal-title">Alert Detail</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline btn-sm" onclick="routeToAlert()">🗺 Get Route</button>
+      <button class="btn btn-sim btn-sm" onclick="simFromAlert()">🌀 Simulate</button>
+      <button class="btn btn-success btn-sm" onclick="resolveCurrentAlert()">✓ Mark Resolved</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

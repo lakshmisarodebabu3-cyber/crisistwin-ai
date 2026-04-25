@@ -1,0 +1,123 @@
+[
+  {
+    "lat": 12.9716,
+    "lng": 77.5946,
+    "disaster_type": "flood",
+    "severity_hint": 9,
+    "description": "Water level rising rapidly",
+    "id": "SOS-DEMO-001",
+    "timestamp": "2026-04-25T11:24:50.813659Z",
+    "status": "active",
+    "priority": "MEDIUM"
+  },
+  {
+    "lat": 12.978,
+    "lng": 77.6,
+    "disaster_type": "flood",
+    "severity_hint": 8,
+    "description": "People trapped on rooftop",
+    "id": "SOS-DEMO-002",
+    "timestamp": "2026-04-25T11:19:50.813659Z",
+    "status": "active",
+    "priority": "MEDIUM"
+  },
+  {
+    "lat": 12.965,
+    "lng": 77.59,
+    "disaster_type": "fire",
+    "severity_hint": 10,
+    "description": "Building on fire, 20+ trapped",
+    "id": "SOS-DEMO-003",
+    "timestamp": "2026-04-25T11:14:50.813659Z",
+    "status": "active",
+    "priority": "HIGH"
+  },
+  {
+    "lat": 12.982,
+    "lng": 77.587,
+    "disaster_type": "medical",
+    "severity_hint": 7,
+    "description": "Mass casualty event",
+    "id": "SOS-DEMO-004",
+    "timestamp": "2026-04-25T11:09:50.813659Z",
+    "status": "active",
+    "priority": "MEDIUM"
+  },
+  {
+    "lat": 12.96,
+    "lng": 77.61,
+    "disaster_type": "collapse",
+    "severity_hint": 9,
+    "description": "Bridge structural failure",
+    "id": "SOS-DEMO-005",
+    "timestamp": "2026-04-25T11:04:50.813659Z",
+    "status": "active",
+    "priority": "MEDIUM"
+  },
+  {
+    "lat": 12.974,
+    "lng": 77.605,
+    "disaster_type": "flood",
+    "severity_hint": 5,
+    "description": "Road flooded, need evacuation",
+    "id": "SOS-DEMO-006",
+    "timestamp": "2026-04-25T10:59:50.813659Z",
+    "status": "active",
+    "priority": "MEDIUM"
+  },
+  {
+    "lat": 12.99,
+    "lng": 77.595,
+    "disaster_type": "medical",
+    "severity_hint": 3,
+    "description": "Elderly person needs assistance",
+    "id": "SOS-DEMO-007",
+    "timestamp": "2026-04-25T10:54:50.813659Z",
+    "status": "active",
+    "priority": "LOW"
+  },
+  {
+    "lat": 12.955,
+    "lng": 77.58,
+    "disaster_type": "fire",
+    "severity_hint": 6,
+    "description": "Wildfire approaching suburb",
+    "id": "SOS-DEMO-008",
+    "timestamp": "2026-04-25T10:49:50.813659Z",
+    "status": "active",
+    "priority": "MEDIUM"
+  },
+  {
+    "lat": 12.969,
+    "lng": 77.615,
+    "disaster_type": "collapse",
+    "severity_hint": 8,
+    "description": "Building collapse, 5 trapped",
+    "id": "SOS-DEMO-009",
+    "timestamp": "2026-04-25T10:44:50.813659Z",
+    "status": "resolved",
+    "priority": "HIGH"
+  },
+  {
+    "lat": 12.985,
+    "lng": 77.608,
+    "disaster_type": "flood",
+    "severity_hint": 4,
+    "description": "Basement flooding",
+    "id": "SOS-DEMO-010",
+    "timestamp": "2026-04-25T10:39:50.813659Z",
+    "status": "active",
+    "priority": "MEDIUM"
+  },
+  {
+    "id": "SOS-1777116418557",
+    "lat": 12.95236756962782,
+    "lng": 77.62115478515626,
+    "disaster_type": "flood",
+    "severity_hint": 5,
+    "description": "man injured",
+    "timestamp": "2026-04-25T11:26:58.557997Z",
+    "status": "active",
+    "priority": "MEDIUM"
+  }
+]
