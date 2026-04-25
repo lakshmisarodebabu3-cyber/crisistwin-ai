@@ -6,7 +6,7 @@
 "use strict";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const API = "http://localhost:5000/api";
+const API = "https://crisistwin-ai-production.up.railway.app/api";
 
 // Rescue base coordinates (Bengaluru city center as default)
 const RESCUE_BASE = { lat: 12.9716, lng: 77.5946 };
