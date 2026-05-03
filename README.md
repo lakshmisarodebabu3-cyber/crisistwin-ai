@@ -111,3 +111,8 @@ Click the **⚡ Load Demo** button in the top-right to seed 10 realistic SOS ale
 
 ## 🛑 Stopping the App
 In the terminal, press `Ctrl + C`
+
+## 🌐 Live Demo
+
+🚀 Click here to use the app:  
+https://crisistwin.netlify.app/
